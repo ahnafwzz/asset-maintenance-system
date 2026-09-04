@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\AssetCategoryController; 
+use App\Http\Controllers\AssetController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -23,6 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('departments', DepartmentController::class); 
     Route::resource('locations', LocationController::class);
     Route::resource('asset-categories', AssetCategoryController::class);
+    Route::resource('assets', AssetController::class);
 });
 
 require __DIR__.'/auth.php';

@@ -27,6 +27,10 @@
                     <x-nav-link :href="route('asset-categories.index')" :active="request()->routeIs('asset-categories.*')">
                         {{ __('Asset Categories') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('assets.index')" :active="request()->routeIs('assets.*')">
+                        {{ __('Assets') }}
+                    </x-nav-link>
                 </div>
             </div>
 
