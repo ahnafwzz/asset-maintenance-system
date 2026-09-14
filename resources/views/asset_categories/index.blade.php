@@ -17,9 +17,13 @@
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-bold">Daftar Kategori Aset</h3>
+                        
+                        @unlessrole('Viewer')
                         <a href="{{ route('asset-categories.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm">
                             + Tambah Kategori
                         </a>
+                        @endunlessrole
+                        
                     </div>
                     
                     <table class="w-full text-left border-collapse">
@@ -27,7 +31,10 @@
                             <tr class="border-b bg-gray-50">
                                 <th class="p-3 text-sm font-semibold">Nama Kategori</th>
                                 <th class="p-3 text-sm font-semibold">Deskripsi</th>
+                                
+                                @unlessrole('Viewer')
                                 <th class="p-3 text-sm font-semibold w-32">Aksi</th>
+                                @endunlessrole
                             </tr>
                         </thead>
                         <tbody>
@@ -35,6 +42,7 @@
                                 <tr class="border-b hover:bg-gray-50">
                                     <td class="p-3">{{ $category->name }}</td>
                                     <td class="p-3">{{ $category->description ?? '-' }}</td>
+                                    @unlessrole('Viewer')
                                     <td class="p-3 text-sm flex gap-3">
                                         <a href="{{ route('asset-categories.edit', $category->id) }}" class="text-blue-500 hover:underline">Edit</a>
                                         <form action="{{ route('asset-categories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus kategori ini?');">
@@ -43,6 +51,7 @@
                                             <button type="submit" class="text-red-500 hover:underline">Hapus</button>
                                         </form>
                                     </td>
+                                    @endunlessrole
                                 </tr>
                             @empty
                                 <tr>

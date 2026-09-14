@@ -17,9 +17,13 @@
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-bold">Daftar Seluruh Aset</h3>
+                        <!-- GEMBOK: Hanya yang BUKAN Viewer yang bisa lihat tombol ini -->
+                        @unlessrole('Viewer')
                         <a href="{{ route('assets.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 text-sm">
                             + Tambah Aset Baru
                         </a>
+                        @endunlessrole
+                        
                     </div>
                     
                     <div class="overflow-x-auto">
@@ -32,7 +36,9 @@
                                     <th class="p-3 text-sm font-semibold">Lokasi</th>
                                     <th class="p-3 text-sm font-semibold">Departemen</th>
                                     <th class="p-3 text-sm font-semibold">Status</th>
+                                    @unlessrole('Viewer')
                                     <th class="p-3 text-sm font-semibold w-32">Aksi</th>
+                                    @endunlessrole
                                 </tr>
                             </thead>
                             <tbody>
@@ -54,6 +60,9 @@
                                                 <span class="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs">Pensiun</span>
                                             @endif
                                         </td>
+                                        </td>
+                                        
+                                        @unlessrole('Viewer')
                                         <td class="p-3 text-sm flex gap-3">
                                             <a href="{{ route('assets.edit', $asset->id) }}" class="text-blue-500 hover:underline">Edit</a>
                                             <form action="{{ route('assets.destroy', $asset->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus aset ini?');">
@@ -62,6 +71,7 @@
                                                 <button type="submit" class="text-red-500 hover:underline">Hapus</button>
                                             </form>
                                         </td>
+                                        @endunlessrole
                                     </tr>
                                 @empty
                                     <tr>
