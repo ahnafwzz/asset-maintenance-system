@@ -1,0 +1,5 @@
+@extends('errors.layout')
+@section('title', '403 - Forbidden')
+@section('code', '403')
+@section('heading', 'Access Denied')
+@section('message', 'You do not have the right roles or permissions to view this page.')

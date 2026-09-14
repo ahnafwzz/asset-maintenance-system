@@ -1,0 +1,5 @@
+@extends('errors.layout')
+@section('title', '401 - Unauthorized')
+@section('code', '401')
+@section('heading', 'Unauthorized Access')
+@section('message', 'You need to login to access this resource.')

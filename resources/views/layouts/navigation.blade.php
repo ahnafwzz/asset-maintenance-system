@@ -31,6 +31,12 @@
                     <x-nav-link :href="route('assets.index')" :active="request()->routeIs('assets.*')">
                         {{ __('Assets') }}
                     </x-nav-link>
+
+                    @role('Super Admin')
+                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                        {{ __('User Approvals') }}
+                    </x-nav-link>
+                    @endrole
                 </div>
             </div>
 

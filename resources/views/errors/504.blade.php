@@ -1,0 +1,5 @@
+@extends('errors.layout')
+@section('title', '504 - Gateway Timeout')
+@section('code', '504')
+@section('heading', 'Gateway Timeout')
+@section('message', 'The server did not receive a timely response. Please check your connection.')

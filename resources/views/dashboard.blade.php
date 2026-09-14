@@ -7,6 +7,27 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+            <!-- BANNER NOTIFIKASI APPROVAL -->
+            @if(auth()->user()->approval_status === 'approved')
+            <div class="mb-6 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl shadow-lg p-6 text-white flex flex-col md:flex-row justify-between items-center border border-white/20 backdrop-blur-sm">
+                <div class="flex items-center gap-4 mb-4 md:mb-0">
+                    <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-2xl shadow-inner">
+                        🎉
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold tracking-tight">Selamat, {{ auth()->user()->name }}!</h3>
+                        <p class="text-blue-50 text-sm mt-1">Pengajuan hak akses Anda telah disetujui oleh Super Admin. Kini Anda resmi menjabat sebagai <strong class="text-white">{{ auth()->user()->roles->first()->name }}</strong>.</p>
+                    </div>
+                </div>
+                <form action="{{ route('clear.approval') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="bg-white text-indigo-600 px-6 py-2.5 rounded-full font-bold hover:bg-gray-50 transition shadow-md hover:-translate-y-0.5 text-sm">
+                        Mulai Bekerja
+                    </button>
+                </form>
+            </div>
+            @endif
             
             <!-- Grid Kartu Statistik -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">

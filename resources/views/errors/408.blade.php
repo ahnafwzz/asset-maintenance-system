@@ -1,0 +1,5 @@
+@extends('errors.layout')
+@section('title', '408 - Request Timeout')
+@section('code', '408')
+@section('heading', 'Request Timeout')
+@section('message', 'The server timed out waiting for the request.')

@@ -1,0 +1,5 @@
+@extends('errors.layout')
+@section('title', '400 - Bad Request')
+@section('code', '400')
+@section('heading', 'Bad Request')
+@section('message', 'The server cannot process your request due to bad syntax.')
