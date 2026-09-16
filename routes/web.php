@@ -47,6 +47,11 @@ Route::middleware('auth')->group(function () {
         auth()->user()->update(['approval_status' => 'none']);
         return back();
     })->name('clear.approval');
+
+    // Rute Pelaporan Kerusakan (Employee)
+    Route::get('/maintenance-requests', [App\Http\Controllers\MaintenanceRequestController::class, 'index'])->name('maintenance.index');
+    Route::get('/maintenance-requests/create', [App\Http\Controllers\MaintenanceRequestController::class, 'create'])->name('maintenance.create');
+    Route::post('/maintenance-requests', [App\Http\Controllers\MaintenanceRequestController::class, 'store'])->name('maintenance.store');
 });
 
 require __DIR__.'/auth.php';
