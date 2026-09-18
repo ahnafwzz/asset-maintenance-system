@@ -21,6 +21,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/profile/request-role', [ProfileController::class, 'requestRole'])->name('profile.request-role');
     
     // Routing Master Data
     
@@ -40,8 +41,15 @@ Route::middleware('auth')->group(function () {
     Route::resource('departments', DepartmentController::class)->only(['index', 'show']);
     Route::resource('locations', LocationController::class)->only(['index', 'show']);
 
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::post('/users/{id}/approve', [UserController::class, 'approve'])->name('users.approve');
+    // Manajemen Pengguna & Approval (HANYA UNTUK SUPER ADMIN)
+    Route::middleware(['role:Super Admin'])->group(function () {
+        // Rute standar Resource untuk index, edit, update, destroy
+        Route::resource('users', UserController::class)->only(['index', 'edit', 'update', 'destroy']);
+        
+        // Rute kustom untuk proses approval
+        Route::post('/users/{id}/approve', [UserController::class, 'approve'])->name('users.approve');
+        Route::post('/users/{id}/reject', [UserController::class, 'reject'])->name('users.reject');
+    });
 
     Route::post('/clear-approval-status', function () {
         auth()->user()->update(['approval_status' => 'none']);

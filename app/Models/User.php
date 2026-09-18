@@ -18,6 +18,8 @@ class User extends Authenticatable
         'password',
         'requested_role',
         'approval_status', 
+        'approval_requested_at',
+        'last_login_at',
     ];
 
     protected $hidden = [
@@ -30,6 +32,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'approval_requested_at' => 'datetime',
+            'last_login_at' => 'datetime',
         ];
     }
 }
