@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\RoleRequestedNotification;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -60,19 +63,19 @@ class ProfileController extends Controller
 
     public function requestRole(Request $request): RedirectResponse
     {
-        // Validasi agar role yang di-request benar-benar ada di tabel roles
         $request->validate([
             'requested_role' => ['required', 'string', 'exists:roles,name'],
         ]);
 
-        // Catat request-nya beserta tanggal dan jam saat tombol ditekan
         $request->user()->update([
             'requested_role' => $request->requested_role,
             'approval_status' => 'pending',
-            'approval_requested_at' => now(), 
+            'approval_requested_at' => now(),
         ]);
 
-        // Kembalikan ke halaman profil dengan pesan sukses
+        $superAdmins = User::role('Super Admin')->get();
+        Notification::send($superAdmins, new RoleRequestedNotification($request->user()));
+
         return Redirect::route('profile.edit')->with('status', 'role-requested');
     }
 }

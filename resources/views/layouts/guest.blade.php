@@ -13,6 +13,8 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
     </head>
     <body class="font-sans text-gray-900 antialiased bg-gray-50 selection:bg-blue-500 selection:text-white">
         
@@ -30,9 +32,8 @@
             <!-- Logo di Atas Form -->
             <div class="mb-6 transform transition hover:scale-105 duration-300">
                 <a href="/">
-                    <div class="w-16 h-16 bg-gradient-to-br from-gray-800 to-black text-white rounded-2xl flex items-center justify-center text-3xl shadow-xl border border-gray-700">
-                        ⌘
-                    </div>
+                    <!-- Panggil logo, set ukurannya jadi w-16 h-16 -->
+                    <x-application-logo class="w-16 h-16 drop-shadow-xl transition-transform hover:scale-105 duration-300" />
                 </a>
             </div>
 

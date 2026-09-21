@@ -8,10 +8,12 @@
     <div class="py-12 bg-gray-50 min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-            <!-- BANNER NOTIFIKASI APPROVAL -->
             @if(auth()->user()->approval_status === 'approved')
             <div class="mb-6 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl shadow-lg p-6 text-white flex flex-col md:flex-row justify-between items-center border border-white/20 backdrop-blur-sm">
                 <div class="flex items-center gap-4 mb-4 md:mb-0">
+                    <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center text-2xl shadow-inner">
+                        🎉
+                    </div>
                     <div>
                         <h3 class="text-xl font-bold tracking-tight">Selamat, {{ auth()->user()->name }}!</h3>
                         <p class="text-blue-50 text-sm mt-1">Pengajuan hak akses Anda telah disetujui oleh Super Admin. Kini Anda resmi menjabat sebagai <strong class="text-white">{{ auth()->user()->roles->first()->name ?? 'Pengguna' }}</strong>.</p>
@@ -26,7 +28,6 @@
             </div>
             @endif
 
-            <!-- Alert Sukses ala iOS -->
             @if (session('success'))
                 <div class="mb-6 bg-green-50 border border-green-100 text-green-800 rounded-2xl p-4 flex items-center shadow-sm transition-all duration-300">
                     <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-4 text-xl shrink-0">
@@ -39,9 +40,7 @@
                 </div>
             @endif
             
-            <!-- Grid Kartu Statistik -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <!-- Kartu Total Aset -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                 <div class="bg-white rounded-2xl shadow-sm p-6 border-l-4 border-blue-500 transition hover:shadow-md">
                     <div class="flex items-center">
                         <div class="flex-1">
@@ -51,17 +50,15 @@
                     </div>
                 </div>
 
-                <!-- Kartu Aset Aktif -->
                 <div class="bg-white rounded-2xl shadow-sm p-6 border-l-4 border-green-500 transition hover:shadow-md">
                     <div class="flex items-center">
                         <div class="flex-1">
-                            <p class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">Aset Aktif / Digunakan</p>
+                            <p class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">Aset Aktif</p>
                             <h3 class="text-3xl font-extrabold text-green-600">{{ $activeAssets ?? 0 }}</h3>
                         </div>
                     </div>
                 </div>
 
-                <!-- Kartu Maintenance -->
                 <div class="bg-white rounded-2xl shadow-sm p-6 border-l-4 border-yellow-500 transition hover:shadow-md">
                     <div class="flex items-center">
                         <div class="flex-1">
@@ -71,7 +68,6 @@
                     </div>
                 </div>
 
-                <!-- Kartu Rusak -->
                 <div class="bg-white rounded-2xl shadow-sm p-6 border-l-4 border-red-500 transition hover:shadow-md">
                     <div class="flex items-center">
                         <div class="flex-1">
@@ -82,14 +78,34 @@
                 </div>
             </div>
 
-            <!-- LAYOUT BAWAH (65 : 35) -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- AREA GRAFIK VISUAL (BARU) -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm flex flex-col items-center justify-center">
+                    <div class="w-full text-center mb-4">
+                        <h3 class="text-lg font-bold text-gray-900">Rasio Kondisi Aset</h3>
+                        <p class="text-xs text-gray-500">Persentase kesehatan inventaris</p>
+                    </div>
+                    <div class="relative w-full h-64 mx-auto flex justify-center">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm lg:col-span-2 flex flex-col justify-center">
+                    <div class="w-full mb-6">
+                        <h3 class="text-lg font-bold text-gray-900">Distribusi per Departemen</h3>
+                        <p class="text-xs text-gray-500">Jumlah aset yang dialokasikan di tiap divisi</p>
+                    </div>
+                    <div class="relative w-full h-64">
+                        <canvas id="deptChart"></canvas>
+                    </div>
+                </div>
                 
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 <div class="lg:col-span-8">
                     <div class="bg-white overflow-hidden shadow-sm sm:rounded-3xl border border-gray-100 h-full flex flex-col">
                         <div class="p-8 flex-1 flex flex-col">
                             
-                            <!-- Header Kolom Kiri -->
                             <div class="flex justify-between items-center mb-6">
                                 <div>
                                     <h3 class="text-xl font-bold text-gray-900 tracking-tight">Laporan Kerusakan Terbaru</h3>
@@ -98,29 +114,20 @@
                                 
                                 <a href="{{ route('maintenance.index') }}" class="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 px-4 py-2 rounded-full transition-all hover:shadow-sm shrink-0">
                                     Lihat Semua 
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                    </svg>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                                 </a>
                             </div>
                             
                             @php
-                                // MENGAMBIL 1 LAPORAN TERBARU (Global) BESERTA RELASI USER DAN ASET
-                                $latestRequest = \App\Models\MaintenanceRequest::with(['asset', 'user'])
-                                                ->latest()
-                                                ->first();
+                                $latestRequest = \App\Models\MaintenanceRequest::with(['asset', 'user'])->latest()->first();
                             @endphp
 
                             @if(!$latestRequest)
-                                <!-- Empty State -->
                                 <div class="text-center py-12 bg-gray-50 rounded-3xl border border-dashed border-gray-200 flex-1 flex flex-col justify-center items-center">
                                     <p class="text-gray-500 font-medium text-sm">Belum ada laporan kerusakan di sistem.</p>
                                 </div>
                             @else
-                                <!-- Kartu Hero Laporan Terbaru -->
                                 <div onclick="openReportModal()" class="block bg-gradient-to-br from-gray-50 to-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm flex-1 flex flex-col justify-between relative overflow-hidden group hover:border-blue-200 hover:shadow-md transition-all duration-300 cursor-pointer">
-                                    
-                                    <!-- Efek Latar Apple (Glow biru) -->
                                     <div class="absolute top-0 right-0 -mt-6 -mr-6 w-32 h-32 bg-blue-50 rounded-full blur-3xl opacity-50 group-hover:opacity-100 group-hover:bg-blue-100 transition-all duration-500"></div>
 
                                     <div class="relative z-10">
@@ -164,7 +171,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- Ikon Panah Interaktif -->
                                     <div class="absolute bottom-8 right-6 opacity-0 group-hover:opacity-100 transform translate-x-4 group-hover:translate-x-0 transition-all duration-300 z-20">
                                         <div class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center shadow-lg">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
@@ -172,15 +178,10 @@
                                     </div>
                                 </div>
 
-                                <!-- POP-UP MODAL (Awalnya disembunyikan) -->
                                 <div id="reportModal" class="fixed inset-0 z-50 hidden items-center justify-center opacity-0 transition-opacity duration-300">
-                                    <!-- Background Blur Gelap -->
                                     <div class="absolute inset-0 bg-gray-900/40 backdrop-blur-sm cursor-pointer" onclick="closeReportModal()"></div>
                                     
-                                    <!-- Kotak Putih Modal -->
                                     <div id="reportModalContent" class="relative bg-white w-full max-w-2xl mx-4 rounded-3xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300">
-                                        
-                                        <!-- Header Modal -->
                                         <div class="px-8 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
                                             <h3 class="text-lg font-bold text-gray-900">Detail Lengkap Laporan</h3>
                                             <button onclick="closeReportModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600 transition-colors">
@@ -188,7 +189,6 @@
                                             </button>
                                         </div>
                                         
-                                        <!-- Isi Modal -->
                                         <div class="p-8">
                                             <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
                                                 <div>
@@ -230,39 +230,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- Script Pengendali Pop-up -->
-                                <script>
-                                    function openReportModal() {
-                                        const modal = document.getElementById('reportModal');
-                                        const content = document.getElementById('reportModalContent');
-                                        
-                                        // Tampilkan elemennya dulu
-                                        modal.classList.remove('hidden');
-                                        modal.classList.add('flex');
-                                        
-                                        // Beri jeda sepersekian detik biar animasinya jalan
-                                        setTimeout(() => {
-                                            modal.classList.remove('opacity-0');
-                                            content.classList.remove('scale-95');
-                                        }, 10);
-                                    }
-
-                                    function closeReportModal() {
-                                        const modal = document.getElementById('reportModal');
-                                        const content = document.getElementById('reportModalContent');
-                                        
-                                        // Tarik animasinya mundur
-                                        modal.classList.add('opacity-0');
-                                        content.classList.add('scale-95');
-                                        
-                                        // Sembunyikan elemen setelah animasi selesai (300ms)
-                                        setTimeout(() => {
-                                            modal.classList.add('hidden');
-                                            modal.classList.remove('flex');
-                                        }, 300);
-                                    }
-                                </script>
                             @endif
                         </div>
                     </div>
@@ -289,7 +256,106 @@
                 </div>
 
             </div>
-
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        function openReportModal() {
+            const modal = document.getElementById('reportModal');
+            const content = document.getElementById('reportModalContent');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeReportModal() {
+            const modal = document.getElementById('reportModal');
+            const content = document.getElementById('reportModalContent');
+            modal.classList.add('opacity-0');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }, 300);
+        }
+
+        // Inisialisasi Grafik saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 1. Grafik Donat (Kondisi Aset)
+            const ctxStatus = document.getElementById('statusChart').getContext('2d');
+            new Chart(ctxStatus, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Aktif', 'Maintenance', 'Rusak', 'Pensiun'],
+                    datasets: [{
+                        data: @json($chartStatusData),
+                        backgroundColor: [
+                            '#34C759', // Apple Green
+                            '#FFCC00', // Apple Yellow
+                            '#FF3B30', // Apple Red
+                            '#8E8E93'  // Apple Gray
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                font: { family: 'inherit', size: 11, weight: '600' }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 2. Grafik Batang (Aset per Departemen)
+            const ctxDept = document.getElementById('deptChart').getContext('2d');
+            new Chart(ctxDept, {
+                type: 'bar',
+                data: {
+                    labels: @json($chartDeptLabels),
+                    datasets: [{
+                        label: 'Jumlah Aset',
+                        data: @json($chartDeptData),
+                        backgroundColor: '#007AFF', // Apple Blue
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        barThickness: 32
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1, font: { family: 'inherit', size: 11 } },
+                            grid: { color: '#F3F4F6', drawBorder: false }
+                        },
+                        x: {
+                            ticks: { font: { family: 'inherit', size: 11, weight: '500' } },
+                            grid: { display: false, drawBorder: false }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 </x-app-layout>

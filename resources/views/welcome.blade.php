@@ -11,7 +11,7 @@
     <!-- Navbar Sederhana -->
     <header class="w-full px-6 py-4 flex justify-between items-center max-w-6xl mx-auto">
         <div class="flex items-center gap-2 font-bold text-xl tracking-tight text-gray-900">
-            <div class="w-8 h-8 bg-blue-600 text-white rounded-lg flex items-center justify-center text-sm shadow-sm">⌘</div>
+            <x-application-logo class="w-8 h-8" />
             AMMS
         </div>
         <div class="text-sm font-medium text-gray-500">
