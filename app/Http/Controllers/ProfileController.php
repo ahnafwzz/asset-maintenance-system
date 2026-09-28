@@ -78,4 +78,22 @@ class ProfileController extends Controller
 
         return Redirect::route('profile.edit')->with('status', 'role-requested');
     }
+
+    public function cancelRoleRequest(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+
+        \Illuminate\Support\Facades\DB::table('notifications')
+            ->where('type', 'App\Notifications\RoleRequestedNotification')
+            ->where('data', 'like', '%' . $user->name . ' mengajukan peran%')
+            ->delete();
+
+        $user->update([
+            'requested_role' => null,
+            'approval_status' => 'none', 
+            'approval_requested_at' => null,
+        ]);
+
+        return Redirect::route('profile.edit')->with('status', 'role-request-cancelled');
+    }
 }

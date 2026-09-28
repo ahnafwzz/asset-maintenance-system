@@ -33,7 +33,7 @@
                     </div>
 
                     @if(auth()->user()->approval_status === 'pending')
-                        <div class="p-4 bg-yellow-50 rounded-2xl border border-yellow-100">
+                        <div class="p-4 bg-yellow-50 rounded-2xl border border-yellow-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                             <div class="flex items-start gap-3">
                                 <svg class="w-5 h-5 text-yellow-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 <div>
@@ -43,6 +43,13 @@
                                     </p>
                                 </div>
                             </div>
+                            
+                            <form method="POST" action="{{ route('profile.cancel-role-request') }}" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pengajuan ini?')">
+                                @csrf
+                                <button type="submit" class="px-4 py-2 bg-white text-red-600 border border-red-200 rounded-lg text-xs font-bold hover:bg-red-50 transition-colors shadow-sm shrink-0">
+                                    Batalkan Pengajuan
+                                </button>
+                            </form>
                         </div>
                     @elseif(!auth()->user()->hasRole('Super Admin'))
                         <form method="POST" action="{{ route('profile.request-role') }}" class="mt-6">

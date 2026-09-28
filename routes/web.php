@@ -22,7 +22,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/profile/request-role', [ProfileController::class, 'requestRole'])->name('profile.request-role');
-    
+    Route::post('/profile/cancel-role-request', [App\Http\Controllers\ProfileController::class, 'cancelRoleRequest'])->name('profile.cancel-role-request');
+
     // Routing Master Data
     
     // 1. JALUR KHUSUS (Satpam Jalur Belakang ditaruh di ATAS)
@@ -61,11 +62,25 @@ Route::middleware('auth')->group(function () {
     Route::get('/maintenance-requests/create', [App\Http\Controllers\MaintenanceRequestController::class, 'create'])->name('maintenance.create');
     Route::post('/maintenance-requests', [App\Http\Controllers\MaintenanceRequestController::class, 'store'])->name('maintenance.store');
 
-    // FITUR NOTIFIKASI: Tandai semua sudah dibaca
+    // Fitur Notifikasi Sistem
+    
+    // Tandai semua notifikasi sudah dibaca
     Route::post('/notifications/mark-read', function () {
         auth()->user()->unreadNotifications->markAsRead();
         return back();
     })->name('notifications.markAllRead');
+
+    // Tandai satu notifikasi spesifik sudah dibaca
+    Route::post('/notifications/{id}/mark-read', function ($id) {
+        auth()->user()->unreadNotifications->where('id', $id)->markAsRead();
+        return back();
+    })->name('notifications.markRead');
+
+    // Hapus notifikasi secara permanen dari database
+    Route::delete('/notifications/{id}', function ($id) {
+        auth()->user()->notifications()->where('id', $id)->delete();
+        return back();
+    })->name('notifications.destroy');
 });
 
 require __DIR__.'/auth.php';
