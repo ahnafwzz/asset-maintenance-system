@@ -84,9 +84,9 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         if ($user->approval_status === 'pending') {
-            // Set status Rejected (untuk notifikasi di user), bersihkan memo request
+            // Set status ke none untuk membersihkan constraint, dan hapus memo request
             $user->update([
-                'approval_status' => 'rejected',
+                'approval_status' => 'none',
                 'requested_role' => null
             ]);
 

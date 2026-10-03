@@ -44,8 +44,10 @@ Route::middleware('auth')->group(function () {
 
     // Manajemen Pengguna & Approval (HANYA UNTUK SUPER ADMIN)
     Route::middleware(['role:Super Admin'])->group(function () {
-        // Rute standar Resource untuk index, edit, update, destroy
-        Route::resource('users', UserController::class)->only(['index', 'edit', 'update', 'destroy']);
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
         
         // Rute kustom untuk proses approval
         Route::post('/users/{id}/approve', [UserController::class, 'approve'])->name('users.approve');
