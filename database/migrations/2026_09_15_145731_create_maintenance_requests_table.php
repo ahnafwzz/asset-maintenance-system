@@ -18,7 +18,16 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->enum('priority', ['Low', 'Medium', 'High', 'Critical'])->default('Medium');
-            $table->enum('status', ['Reported', 'Reviewed', 'Assigned', 'Rejected'])->default('Reported');
+            $table->enum('status', [
+                'Reported', 
+                'Reviewed', 
+                'Assigned', 
+                'In Progress', 
+                'Resolved', 
+                'Closed', 
+                'Cancelled', 
+                'Rejected'
+            ])->default('Reported');
             $table->timestamps();
         });
     }

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MaintenanceRequest extends Model
 {
-    protected $fillable = ['asset_id', 'user_id', 'title', 'description', 'priority', 'status'];
+    protected $fillable = ['asset_id', 'user_id', 'technician_id', 'title', 'description', 'priority', 'status'];
 
     public function asset() {
         return $this->belongsTo(Asset::class);
@@ -14,6 +14,11 @@ class MaintenanceRequest extends Model
 
     public function user() {
         return $this->belongsTo(User::class); // Pelapor
+    }
+
+    // Tambahkan relasi ke Teknisi
+    public function technician() {
+        return $this->belongsTo(User::class, 'technician_id');
     }
 
     public function workOrder() {

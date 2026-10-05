@@ -8,6 +8,20 @@
     <div class="py-12 bg-gray-50 min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
+            @if(session('success'))
+                <div class="mb-6 px-6 py-4 bg-green-50 border border-green-100 text-green-700 rounded-2xl flex items-center gap-3 shadow-sm">
+                    <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    <span class="font-medium text-sm">{{ session('success') }}</span>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="mb-6 px-6 py-4 bg-red-50 border border-red-100 text-red-700 rounded-2xl flex items-center gap-3 shadow-sm">
+                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    <span class="font-medium text-sm">{{ session('error') }}</span>
+                </div>
+            @endif
+
             <!-- Card Utama -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-3xl border border-gray-100">
                 <div class="p-8">
@@ -79,9 +93,14 @@
                                             <div class="text-xs text-gray-400 mt-1">{{ $request->created_at->format('d M Y, H:i') }}</div>
                                         </td>
 
-                                        <!-- Kolom Pelapor -->
+                                        <!-- Kolom Pelapor & Teknisi -->
                                         <td class="py-4 px-4">
-                                            <div class="font-medium text-gray-900">{{ $request->user->name ?? 'Unknown' }}</div>
+                                            <div class="font-medium text-gray-900">Oleh: {{ $request->user->name ?? 'Unknown' }}</div>
+                                            @if($request->technician_id)
+                                                <div class="text-xs text-blue-600 mt-1 font-bold">Teknisi: {{ $request->technician->name }}</div>
+                                            @else
+                                                <div class="text-xs text-orange-500 mt-1 font-semibold">Belum Ditugaskan</div>
+                                            @endif
                                         </td>
 
                                         <!-- Kolom Prioritas -->
@@ -109,27 +128,50 @@
 
                                                 <!-- Tombol Batal: Muncul jika statusnya Reported & (milik user sendiri ATAU Super Admin) -->
                                                 @if($request->status === 'Reported' && (auth()->id() === $request->user_id || auth()->user()->hasRole('Super Admin')))
-                                                    <button class="text-xs font-semibold text-orange-600 bg-orange-50 hover:bg-orange-100 px-3 py-1.5 rounded-lg transition-colors">
-                                                        Batalkan
-                                                    </button>
+                                                    <form method="POST" action="{{ route('maintenance.update', $request->id) }}" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan laporan ini?');">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <input type="hidden" name="status" value="Cancelled">
+                                                        <button type="submit" class="text-xs font-semibold text-orange-600 bg-orange-50 hover:bg-orange-100 px-3 py-1.5 rounded-lg transition-colors">
+                                                            Batalkan
+                                                        </button>
+                                                    </form>
                                                     @php $hasAction = true; @endphp
                                                 @endif
 
                                                 <!-- Tombol Proses (Gol 2): Untuk Asset Manager / Maintenance Staff -->
                                                 @hasanyrole('Asset Manager|Maintenance Staff|Super Admin')
-                                                    @if($request->status !== 'Resolved' && $request->status !== 'Cancelled')
-                                                    <button class="text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors">
-                                                        Tindak Lanjuti
-                                                    </button>
-                                                    @php $hasAction = true; @endphp
+                                                    @if($request->status !== 'Resolved' && $request->status !== 'Closed' && $request->status !== 'Cancelled' && $request->status !== 'Rejected')
+                                                        
+                                                        @php 
+                                                            $canEdit = true;
+                                                            // Jika user hanya teknisi, dan laporan sudah dipegang orang lain, sembunyikan tombolnya!
+                                                            if(auth()->user()->hasRole('Maintenance Staff') && !auth()->user()->hasAnyRole('Super Admin|Asset Manager')) {
+                                                                if($request->technician_id !== null && $request->technician_id !== auth()->id()) {
+                                                                    $canEdit = false;
+                                                                }
+                                                            }
+                                                        @endphp
+
+                                                        @if($canEdit)
+                                                            <a href="{{ route('maintenance.edit', $request->id) }}" class="text-xs font-semibold text-blue-600 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1">
+                                                                Tindak Lanjuti
+                                                            </a>
+                                                            @php $hasAction = true; @endphp
+                                                        @endif
+
                                                     @endif
                                                 @endhasanyrole
 
                                                 <!-- Tombol Hapus (Gol 1): HANYA Super Admin -->
                                                 @hasrole('Super Admin')
-                                                    <button class="text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors">
-                                                        Hapus
-                                                    </button>
+                                                    <form method="POST" action="{{ route('maintenance.destroy', $request->id) }}" onsubmit="return confirm('Hapus laporan ini secara permanen? Data tidak dapat dikembalikan.');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-xs font-semibold text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors ml-1">
+                                                            Hapus
+                                                        </button>
+                                                    </form>
                                                     @php $hasAction = true; @endphp
                                                 @endhasrole
 

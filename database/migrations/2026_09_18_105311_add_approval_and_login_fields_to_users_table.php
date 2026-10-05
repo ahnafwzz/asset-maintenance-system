@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Tambahkan setelah kolom requested_role (atau kolom lain yang ada di akhir)
+            $table->string('username')->unique(); 
+            $table->string('requested_role')->nullable();
+            $table->string('approval_status')->default('none');
             $table->timestamp('approval_requested_at')->nullable();
             $table->timestamp('last_login_at')->nullable();
         });

@@ -59,10 +59,13 @@ Route::middleware('auth')->group(function () {
         return back();
     })->name('clear.approval');
 
-    // Rute Pelaporan Kerusakan (Employee)
+    // Rute Pelaporan Kerusakan (Employee & Maintenance Staff)
     Route::get('/maintenance-requests', [App\Http\Controllers\MaintenanceRequestController::class, 'index'])->name('maintenance.index');
     Route::get('/maintenance-requests/create', [App\Http\Controllers\MaintenanceRequestController::class, 'create'])->name('maintenance.create');
     Route::post('/maintenance-requests', [App\Http\Controllers\MaintenanceRequestController::class, 'store'])->name('maintenance.store');
+    Route::put('/maintenance-requests/{id}', [App\Http\Controllers\MaintenanceRequestController::class, 'update'])->name('maintenance.update');
+    Route::delete('/maintenance-requests/{id}', [App\Http\Controllers\MaintenanceRequestController::class, 'destroy'])->name('maintenance.destroy');
+    Route::get('/maintenance-requests/{id}/edit', [App\Http\Controllers\MaintenanceRequestController::class, 'edit'])->name('maintenance.edit');
 
     // Fitur Notifikasi Sistem
     
